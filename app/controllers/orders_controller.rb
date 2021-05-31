@@ -1,7 +1,10 @@
 class OrdersController < ApplicationController
 
   def show
+
+    # p "enhanced_cart in show", flash[:enhanced_cart]
     @order = Order.find(params[:id])
+
   end
 
   def create
@@ -9,8 +12,8 @@ class OrdersController < ApplicationController
     order  = create_order(charge)
 
     if order.valid?
-      empty_cart!
       redirect_to order, notice: 'Your Order has been placed.'
+      empty_cart!
     else
       redirect_to cart_path, flash: { error: order.errors.full_messages.first }
     end
@@ -36,6 +39,7 @@ class OrdersController < ApplicationController
   end
 
   def create_order(stripe_charge)
+    p "enhanced_cart", enhanced_cart
     order = Order.new(
       email: params[:stripeEmail],
       total_cents: cart_subtotal_cents,
